@@ -1,7 +1,21 @@
 
-import express from 'express';
-import Menu from '../models/Menu.js';
-const r=express.Router();
-r.get('/',async(req,res)=>res.json(await Menu.find()));
-r.post('/',async(req,res)=>res.json(await Menu.create(req.body)));
-export default r;
+import {useEffect,useState} from 'react';
+export default function Menu(){
+ const [items,setItems]=useState([]);
+ useEffect(()=>{
+  fetch(process.env.NEXT_PUBLIC_API_URL+'/api/menu')
+   .then(r=>r.json()).then(setItems);
+ },[]);
+ return (
+  <div>
+   <h1>Menu</h1>
+   {items.map(i=>(
+    <div key={i._id}>
+     <h3>{i.name}</h3>
+     <p>{i.description}</p>
+     <b>${i.price}</b>
+    </div>
+   ))}
+  </div>
+ );
+}
